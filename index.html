@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body { background-color: #000; padding: 0px; margin: 0px; }
+        </style>
+        <script type="text/javascript" src="js/jquery.min.js">
+        </script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+
+			document.ontouchmove = function(e) {e.preventDefault();}
+
+			// Declare context with canvas
+			var game_canvas = document.getElementById("canvas");
+			var ctx = game_canvas.getContext("2d");
+			ctx.canvas.width = window.innerWidth;
+			ctx.canvas.height = window.innerHeight;
+			var width = window.innerWidth;
+			var height = window.innerHeight;
+			var imgload_counter = 0;
+			var image_src = ['images/title_screen.png', 'images/furby1.png'];
+			var images = [];
+			var ongoingTouches = new Array;
+
+		function title_screen() {
+			var self = this;
+
+			this.draw = function() {
+				ctx.drawImage(images[0], 0, 0, window.innerWidth, window.innerHeight);
+			}
+		}
+
+		function level_one() {
+			var self = this;
+
+			this.draw = function() {
+				ctx.clearRect(0, 0, width, height);
+				ctx.drawImage(images[1], 0, 0, window.innerWidth, window.innerHeight);
+			}
+		}
+
+
+		for (var i = 0; i < image_src.length; i++) {
+			var img = new Image();
+			img.src = image_src[i];
+			img.onload = imgloadHandler;
+			images.push(img);
+			imgload_counter++;
+		}
+
+		function imgloadHandler(e) {
+			console.log("img loaded.");
+			imgload_counter--;
+			if (imgload_counter == 0) {
+				console.log("all done!")
+				game_title_screen = new title_screen();
+				game_title_screen.draw();
+			}
+		}
+
+		function handleStart(evt) {
+			evt.preventDefault();
+
+        var touches = evt.changedTouches;
+
+        for (var i = 0; i < touches.length; i++) {
+         
+            var x = touches[i].pageX;
+            var y = touches[i].pageY;
+
+            // DRAW
+			var lev_one = new level_one();
+			lev_one.draw();
+			game_canvas.addEventListener("touchstart", handleStart_level_one, false);
+        }
+
+    }
+
+		function handleStart_level_one(evt) {
+			evt.preventDefault();
+
+        var touches = evt.changedTouches;
+
+        for (var i = 0; i < touches.length; i++) {
+         
+            var x = touches[i].pageX;
+            var y = touches[i].pageY;
+			
+			//alert("asdasd");
+            // DRAW
+			game_title_screen.draw();
+			//game_canvas.addEventListener("touchstart", handleStart_level_one, false);
+        }
+
+    }
+
+    game_canvas.addEventListener("touchstart", handleStart, false);
+
+});
+        </script>
+    </head>
+    
+    <body>
+        <canvas id="canvas">
+            Your browser does not support the canvas element.
+        </canvas>
+    </body>
+
+</html>
